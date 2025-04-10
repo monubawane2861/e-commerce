@@ -8,8 +8,6 @@ const Navbar = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const isActive = (path) => location.pathname === path;
-
   const navLinkClass =
     "hover:text-emerald-600 font-medium transition-colors flex items-center";
 
@@ -29,20 +27,12 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link
-              to="/products"
-              className={navLinkClass}
-              aria-current={isActive("/products") ? "page" : undefined}
-            >
+            <Link to="/products" className={navLinkClass}>
               <Package className="h-6 w-6 mr-1" />
               Products
             </Link>
 
-            <Link
-              to="/cart"
-              className={navLinkClass}
-              aria-current={isActive("/cart") ? "page" : undefined}
-            >
+            <Link to="/cart" className={navLinkClass}>
               <ShoppingCart className="h-6 w-6" />
               <span className="ml-1 bg-emerald-600 text-white rounded-full px-2 py-0.5 text-xs">
                 {getCartItemsCount()}
@@ -64,7 +54,6 @@ const Navbar = () => {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="text-white focus:outline-none"
-              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             >
               {mobileMenuOpen ? (
                 <X className="h-6 w-6" />
