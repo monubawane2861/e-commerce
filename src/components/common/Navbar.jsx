@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ShoppingCart, Package, Menu, X } from "lucide-react";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../context/CartContext"; //custom hook
 
 const Navbar = () => {
-  const { getCartItemsCount } = useCart();
-  const location = useLocation();
+  const { getCartItemsCount } = useCart(); //how many items in cards they will show
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinkClass =

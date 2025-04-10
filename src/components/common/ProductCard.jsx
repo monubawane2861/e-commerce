@@ -3,20 +3,21 @@ import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
 const ProductCard = ({ product }) => {
-  const { addToCart } = useCart();
+  const { addToCart } = useCart(); //Ye addToCart() function CartContext se aata hai. when user click add to cardsfunction will be work
 
   const handleAddToCart = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addToCart(product);
+    e.preventDefault(); //dont want to navigate default link
+    e.stopPropagation(); //karta hai ki click event parent components tak na jaye.
+    addToCart(product); //product ko cart me add karta hai
   };
 
   const discountedPrice =
     // 100 * (1 - 20 / 100) = ₹80
-
+    //100rs product aand 20 % discount
     product.price * (1 - product.discountPercentage / 100);
 
   return (
+    // this complete code have add link this provide for complete card when we are cliking on cards they will show details
     <Link to={`/products/${product.id}`} className="group">
       <div className="bg-white rounded-xl border border-gray-200  shadow-md transition-transform duration-300 hover:shadow-xl group-hover:scale-105">
         <div className="h-48 overflow-hidden">

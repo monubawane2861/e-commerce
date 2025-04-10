@@ -10,6 +10,7 @@ const ProductList = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch("https://dummyjson.com/products");
+        console.log(response);
         if (!response.ok) throw new Error("Failed to fetch products");
         const result = await response.json();
         setProducts(result.products);
