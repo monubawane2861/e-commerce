@@ -7,12 +7,12 @@ const ProductList = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const getProducts = async () => {
+    const fetchProducts = async () => {
       try {
-        const res = await fetch("https://dummyjson.com/products");
-        if (!res.ok) throw new Error("Failed to fetch products");
-        const data = await res.json();
-        setProducts(data.products);
+        const response = await fetch("https://dummyjson.com/products");
+        if (!response.ok) throw new Error("Failed to fetch products");
+        const result = await response.json();
+        setProducts(result.products);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -20,13 +20,13 @@ const ProductList = () => {
       }
     };
 
-    getProducts();
+    fetchProducts();
   }, []);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="h-12 w-12 border-4 border-emerald-600  border-t-transparent rounded-full animate-spin" />
+        <div className="h-12 w-12 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -40,13 +40,13 @@ const ProductList = () => {
   }
 
   return (
-    <div className="container px-[10%]">
+    <div className="container px-[10%] mt-20">
       <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
         Our Products
       </h1>
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+        {products.map((item) => (
+          <ProductCard key={item.id} product={item} />
         ))}
       </div>
     </div>

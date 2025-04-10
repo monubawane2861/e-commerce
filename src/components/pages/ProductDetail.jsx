@@ -7,90 +7,84 @@ import axios from "axios";
 const ProductDetail = () => {
   const { id } = useParams();
   const { addToCart } = useCart();
+
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // Added error state
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          `https://dummyjson.com/products/${id}`
-        );
-        setProduct(response.data);
-      } catch (error) {
-        setError(error.message);
+        const res = await axios.get(`https://dummyjson.com/products/${id}`);
+        setProduct(res.data);
+      } catch (err) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchProduct();
+    fetchData();
   }, [id]);
 
-  const handleQuantityChange = (e) => {
-    const value = parseInt(e.target.value);
-    if (!isNaN(value) && value > 0) {
-      setQuantity(value);
-    }
+  const changeQuantity = (val) => {
+    setQuantity((prev) => Math.max(1, prev + val));
   };
 
-  const handleAddToCart = () => {
-    if (product) {
-      addToCart(product, quantity);
-    }
-  };
-
-  // Simplified image navigation
-  const navigateImage = (direction) => {
-    if (product && product.images.length > 0) {
-      setActiveImageIndex((prevIndex) => {
-        const newIndex =
-          (prevIndex + direction + product.images.length) %
-          product.images.length;
-        return newIndex;
-      });
-    }
+  const handleInputChange = (e) => {
+    const val = parseInt(e.target.value);
+    if (!isNaN(val) && val > 0) setQuantity(val);
   };
 
   const discountedPrice = product
     ? product.price * (1 - product.discountPercentage / 100)
     : 0;
 
-  if (loading)
+  const navigateImage = (dir) => {
+    if (!product?.images?.length) return;
+    setActiveImageIndex(
+      (prev) => (prev + dir + product.images.length) % product.images.length
+    );
+  };
+
+  const handleAddToCart = () => {
+    if (product) addToCart(product, quantity);
+  };
+
+  if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-"></div>
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-emerald-600"></div>
       </div>
     );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-6">
+    <div className="min-h-screen py-6 mt-20">
       <div className="max-w-5xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
         <div className="md:flex">
           {/* Image Section */}
           <div className="md:w-1/2 w-full relative">
             <div className="relative h-96">
               <img
-                src={product?.images[activeImageIndex]}
-                alt={product?.title}
+                src={product.images[activeImageIndex]}
+                alt={product.title}
                 className="w-full h-full object-contain rounded-tl-lg rounded-bl-lg"
               />
 
-              {product?.images?.length > 1 && (
+              {product.images.length > 1 && (
                 <>
                   <button
                     onClick={() => navigateImage(-1)}
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/75 hover:bg-gray-200 text-gray-700 p-2 rounded-full shadow-md transition-colors duration-200"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/75 hover:bg-gray-200 text-gray-700 p-2 rounded-full shadow-md"
                   >
                     <ChevronLeft className="h-6 w-6" />
                   </button>
                   <button
                     onClick={() => navigateImage(1)}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/75 hover:bg-gray-200 text-gray-700 p-2 rounded-full shadow-md transition-colors duration-200"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/75 hover:bg-gray-200 text-gray-700 p-2 rounded-full shadow-md"
                   >
                     <ChevronRight className="h-6 w-6" />
                   </button>
@@ -98,37 +92,38 @@ const ProductDetail = () => {
               )}
             </div>
 
-            {product?.images?.length > 1 && (
+            {product.images.length > 1 && (
               <div className="flex overflow-x-auto p-2 gap-2 bg-gray-50">
-                {product?.images?.map((img, index) => (
+                {product.images.map((img, i) => (
                   <img
-                    key={index}
+                    key={i}
                     src={img}
-                    alt={`${product?.title} thumbnail ${index}`}
-                    className={`h-16 w-16 object-cover cursor-pointer rounded-md transition-shadow duration-300 ${
-                      activeImageIndex === index
+                    alt={`thumbnail-${i}`}
+                    onClick={() => setActiveImageIndex(i)}
+                    className={`h-16 w-16 object-cover cursor-pointer rounded-md ${
+                      activeImageIndex === i
                         ? "shadow-lg shadow-emerald-600 border-2 border-emerald-600"
                         : "border border-gray-200 hover:shadow-md"
                     }`}
-                    onClick={() => setActiveImageIndex(index)}
                   />
                 ))}
               </div>
             )}
           </div>
 
+          {/* Detail Section */}
           <div className="md:w-1/2 w-full p-8">
-            {" "}
-            {/* Responsive width */}
             <div className="flex items-center mb-4">
               <span className="bg-blue-100 text-emerald-600 text-xs px-2 py-1 rounded-full font-semibold mr-2">
-                {product?.category}
+                {product.category}
               </span>
-              <span className="text-gray-600 text-sm">{product?.brand}</span>
+              <span className="text-gray-600 text-sm">{product.brand}</span>
             </div>
+
             <h1 className="text-3xl font-extrabold text-gray-900 mb-3">
-              {product?.title}
+              {product.title}
             </h1>
+
             <div className="flex items-center mb-5">
               <div className="flex text-yellow-400 mr-2">
                 {[...Array(5)].map((_, i) => (
@@ -136,37 +131,40 @@ const ProductDetail = () => {
                     key={i}
                     className="h-5 w-5"
                     fill={
-                      i < Math.round(product?.rating) ? "currentColor" : "none"
+                      i < Math.round(product.rating) ? "currentColor" : "none"
                     }
                   />
                 ))}
               </div>
-              <span className="text-gray-700">{product?.rating} stars</span>
+              <span className="text-gray-700">{product.rating} stars</span>
             </div>
+
             <p className="text-gray-700 mb-6 leading-relaxed">
-              {product?.description}
+              {product.description}
             </p>
+
             <div className="mb-6">
               <div className="flex items-center">
                 <span className="text-4xl font-bold text-emerald-600 mr-3">
                   ${discountedPrice.toFixed(2)}
                 </span>
-                {product?.discountPercentage > 0 && (
+                {product.discountPercentage > 0 && (
                   <>
-                    <span className="text-lg text-gray-500 line-through">
-                      ${product?.price.toFixed(2)}
+                    <span className="text-lg text-red-500 line-through">
+                      ${product.price.toFixed(2)}
                     </span>
                     <span className="ml-2 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-semibold">
-                      {product?.discountPercentage}% OFF
+                      {product.discountPercentage}% OFF
                     </span>
                   </>
                 )}
               </div>
               <p className="text-emerald-600 text-sm mt-1">
-                In Stock: {product?.stock} units
+                In Stock: {product.stock} units
               </p>
             </div>
-            {/* Quantity */}
+
+            {/* Quantity Control */}
             <div className="flex items-center mb-7">
               <label
                 htmlFor="quantity"
@@ -176,35 +174,32 @@ const ProductDetail = () => {
               </label>
               <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
                 <button
-                  onClick={() =>
-                    setQuantity((prevQuantity) => Math.max(1, prevQuantity - 1))
-                  } //Simplified quantity decrement
-                  className="px-4 py-2 bg-gray-50 hover:bg-gray-200 transition-colors duration-200 text-gray-700"
+                  onClick={() => changeQuantity(-1)}
+                  className="px-4 py-2 bg-gray-50 hover:bg-gray-200 text-gray-700"
                 >
                   -
                 </button>
                 <input
-                  type="number"
                   id="quantity"
-                  name="quantity"
+                  type="number"
                   value={quantity}
-                  onChange={handleQuantityChange}
+                  onChange={handleInputChange}
                   min="1"
                   className="w-20 py-2 text-center border-l border-r border-gray-300 focus:outline-none"
                 />
                 <button
-                  onClick={() =>
-                    setQuantity((prevQuantity) => prevQuantity + 1)
-                  } // Simplified quantity increment
-                  className="px-4 py-2 bg-gray-50 hover:bg-gray-200 transition-colors duration-200 text-gray-700"
+                  onClick={() => changeQuantity(1)}
+                  className="px-4 py-2 bg-gray-50 hover:bg-gray-200 text-gray-700"
                 >
                   +
                 </button>
               </div>
             </div>
+
+            {/* Add to Cart */}
             <button
               onClick={handleAddToCart}
-              className="w-full bg-emerald-600 text-white py-3 rounded-md font-semibold transition-colors duration-300 flex items-center justify-center" //Updated Color
+              className="w-full bg-emerald-600 text-white py-3 rounded-md font-semibold flex items-center justify-center transition-colors duration-300"
             >
               Add to Cart <ShoppingCart className="ml-2" />
             </button>

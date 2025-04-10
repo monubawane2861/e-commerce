@@ -12,11 +12,13 @@ const ProductCard = ({ product }) => {
   };
 
   const discountedPrice =
+    // 100 * (1 - 20 / 100) = ₹80
+
     product.price * (1 - product.discountPercentage / 100);
 
   return (
     <Link to={`/products/${product.id}`} className="group">
-      <div className="bg-white rounded-xl border border-gray-200 shadow-md transition-transform duration-300 hover:shadow-xl group-hover:scale-105">
+      <div className="bg-white rounded-xl border border-gray-200  shadow-md transition-transform duration-300 hover:shadow-xl group-hover:scale-105">
         <div className="h-48 overflow-hidden">
           <img
             src={product.thumbnail}
@@ -35,8 +37,9 @@ const ProductCard = ({ product }) => {
               ${discountedPrice.toFixed(2)}
             </span>
             {product.discountPercentage > 0 && (
-              <span className="text-sm line-through text-gray-500 ml-2">
+              <span className="text-sm line-through text-red-500 ml-2">
                 ${product.price.toFixed(2)}
+                {/* it is use for show 2 digit value */}
               </span>
             )}
           </div>
