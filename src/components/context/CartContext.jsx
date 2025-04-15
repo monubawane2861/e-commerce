@@ -36,12 +36,12 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  // Remove product from cart
+  // Remove product from cart//delete
   const removeFromCart = (productId) => {
     setCart((prev) => prev.filter((item) => item.id !== productId));
   };
 
-  // Update quantity of product in cart
+  // Update quantity of product in cart .when we have 0  so dont do any thing but we have card and then want again this so they will increase
   const updateQuantity = (productId, quantity) => {
     if (quantity <= 0) {
       removeFromCart(productId);

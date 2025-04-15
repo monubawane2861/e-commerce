@@ -9,6 +9,7 @@ const Cart = () => {
   if (cart.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
+        -
         <ShoppingBag className="h-16 w-16 text-gray-400 mb-4" />
         <h2 className="text-3xl font-semibold text-gray-800 mb-2">
           Your cart is empty
@@ -154,6 +155,7 @@ const Cart = () => {
             </div>
             <div className="flex justify-between text-gray-700 font-medium">
               <span>Total Amount</span>
+              {/* i want to stay 2 digit number */}
               <span>${getCartTotal().toFixed(2)}</span>
             </div>
           </div>
@@ -168,7 +170,7 @@ const Cart = () => {
             to="/products"
             className="block text-center text-emerald-600 mt-4 hover:underline"
           >
-            ← Continue Shopping
+            Continue Shopping
           </Link>
         </div>
       </div>
